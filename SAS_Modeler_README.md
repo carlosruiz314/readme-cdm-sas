@@ -22,13 +22,13 @@ El modelo de capacidad de pago está compuesto por 3 programas principales:
 * Cuenta el número de registros agrupando por `&ID_FECHA`<sup id="a1-1-3">[[3]](#f1-1-3)</sup>, `&IDENTIFICADOR`<sup id="a1-1-4">[[4]](#f1-1-4)</sup>
 
 * Define varias macros que encapsulan distintos modelos de clasificación:
-    - [**Lasso regression**](#lasso-regression-5-)
+    - [**Lasso regression**](#lasso-regression5-)
     - [**Treeboost regression**](#treeboost-regression-)
     - [**Tree regression**](#tree-regression-)
     - [**PCA Regression**](#pca-regression-)
     - [**Cluster regression**](#cluster-regression-)
 
-[Notas y comentarios](#notas--comentarios-sección-11-vars-y-macros-)
+[**Notas y comentarios**](#notas--comentarios-sección-11-vars-y-macros-)
 
 ### Lasso regression<sup id="a1-1-5">[[5]](#f1-1-5)</sup> [↩](#11-vars-y-macros-):
 
@@ -137,7 +137,7 @@ Incluye a su vez los siguientes componentes (macros):
 
 * Hace un bucle de 14 iteraciones para calcular el IP univariante mínimo necesario para seleccionar una variable:
 
- `&IND_MIN = 0.07 - &I * 0.005`
+    `&IND_MIN = 0.07 - &I * 0.005`
 
 * En cada una de las iteraciones, ejecutará los siguientes componentes (macros):
     - **Selección variables:**
@@ -425,23 +425,18 @@ Entiendo que el `LOG()` es para limitar el peso de los valores muy elevados en e
 <a id="f1-1-16"><sup>[16]</a></sup> Se modifica la tabla de entrada para capturar el dataset entero y se lanza la regresión con el número óptimo de componentes principales [↩](#a1-1-16)
 
 ---
-**Notas / comentarios sección 1.2. Transformer**
+### Notas / comentarios sección 1.2. Transformer [↩](#12-transformer-)
 
 <a id="f1-2-1"><sup>[1]</a></sup> De momento, `&FRANJAS_LEN = 1` [↩](#a1-2-1)
 
 <a id="f1-2-2"><sup>[2]</a></sup> `&FLAG = CAPACIDAD` [↩](#a1-2-2)
 
 ---
-**Notas / comentarios sección 2.1. Variables**
+### Notas / comentarios sección 2.1. Variables [↩](#21-variables-)
 
 <a id="f2-1-1"><sup>[1]</a></sup> En la V6 este paso está comentado, por lo que no se están eliminando dichas variables de la tabla del modelo. [↩](#a2-1-1)
 
 ---
-**Notas / comentarios sección 2.2. Transformer**
+### Notas / comentarios sección 2.2. Transformer [↩](#22-transformer-)
 
 <a id="f2-2-1"><sup>[1]</a></sup> De momento, `&AUX_FRANJAS` y `&AUX_FRANJAS_CORTE = TOT (V6)` [↩](#a2-2-1)
-
----
-
-Bla bla <sup id="ta1">[[1]](#tf1)</sup>
-<a id="tf1"><sup>[1]</a></sup> Footnote content here. [↩](#ta1)
