@@ -2,17 +2,19 @@
 
 El SAS está compuesto por 3 flujos principales:
 1.	**Variables y Macros**
-2.	[**Modelo Capacidad de Pago**](#1-modelo-de-capacidad-de-pago-)
-3.	[**Modelo de Contactabilidad**](#2-modelo-de-contactabilidad-)
+2.	[**Modelo de Regresion**](#1-modelo-de-regresion-)
+3.	[**Modelo de Clasificacion**](#2-modelo-de-clasificacion-)
 
-# 1. Modelo de capacidad de pago [↩](#readme-sas-cdm)
+# 1. Modelo de Regresion [↩](#readme-sas-cdm)
 
 El modelo de capacidad de pago está compuesto por 3 programas principales:
 1. [**Vars y macros**](#11-vars-y-macros-)
 2. [**Transformer**](#12-transformer-)
 3. [**Modeler**](#13-modeler-)
 
-## 1.1. Vars y macros [↩](#1-modelo-de-capacidad-de-pago-)
+## 1.1. Vars y macros [↩](#1-modelo-de-regresion-)
+
+_Ir a la sección_ [_Notas y comentarios_](#notas--comentarios-sección-11-vars-y-macros-)
 
 * Parte de la tabla de entrada del modelo, añade el número de fila<sup name="a1-1-1">[[1]](#f1-1-1)</sup> y calcula:
   `CAPACIDAD2 = SIGN(CAPACIDAD)*LOG(ABS(CAPACIDAD)+1)`<sup id="a1-1-2">[[2]](#f1-1-2)</sup>  
@@ -27,8 +29,6 @@ El modelo de capacidad de pago está compuesto por 3 programas principales:
     - [**Tree regression**](#tree-regression-)
     - [**PCA Regression**](#pca-regression-)
     - [**Cluster regression**](#cluster-regression-)
-
-[**Notas y comentarios**](#notas--comentarios-sección-11-vars-y-macros-)
 
 ### Lasso regression<sup id="a1-1-5">[[5]](#f1-1-5)</sup> [↩](#11-vars-y-macros-):
 
@@ -68,7 +68,7 @@ Incluye a su vez los siguientes componentes (macros):
     - **RMSE<sup id="a1-1-8">[[8]](#f1-1-8)</sup> train:** `&RMSE_TREEBOOST_TRAIN`
     - **RMSE test:** `&RMSE_TREEBOOST_TEST`
 
- … y se selecciona el hiperparámetro `&ITERACIONES` que minimice el RMSE test<sup id="a1-1-9">[[9]](#f1-1-9)</sup>.
+    … y se selecciona el hiperparámetro `&ITERACIONES` que minimice el RMSE test<sup id="a1-1-9">[[9]](#f1-1-9)</sup>.
 
 * Una vez se tienen las iteraciones óptimas, se entrena de nuevo el modelo, cambiando algunos parámetros:
 
@@ -99,7 +99,7 @@ Incluye a su vez los siguientes componentes (macros):
     - **RMSE train:** `&RMSE_TREE_TRAIN`
     - **RMSE test:** `&RMSE_TREE_TEST`
 
- … y se selecciona el hiperparámetro `&DEPTH` que minimice el RMSE test.
+    … y se selecciona el hiperparámetro `&DEPTH` que minimice el RMSE test.
 
 * Una vez se tienen las iteraciones óptimas, se entrena de nuevo el modelo, cambiando algunos parámetros:
 
@@ -133,7 +133,7 @@ Incluye a su vez los siguientes componentes (macros):
     - **RMSE train:** `&RMSE_PCA_TRAIN`
     - **RMSE test:** `&RMSE_PCA_TEST`
 
- … y se selecciona el hiperparámetro `&NUM_PC` que minimice el RMSE test.
+    … y se selecciona el hiperparámetro `&NUM_PC` que minimice el RMSE test.
 
 * Una vez se tiene el óptimo de componentes principales, se entrena de nuevo el modelo, cambiando algunos parámetros:
 
@@ -169,14 +169,16 @@ Incluye a su vez los siguientes componentes (macros):
     - **RMSE train:** `&RMSE_TRAIN`
     - **RMSE test:** `&RMSE_TEST`
 
- … y se selecciona el hiperparámetro `&IND_MIN` que minimice el RMSE test.
+    … y se selecciona el hiperparámetro `&IND_MIN` que minimice el RMSE test.
 
 * Una vez se tiene el IP univariante óptimo, se entrena de nuevo el modelo, cambiando algunos parámetros:
     - `SELECCION_VARS(“REG”, &FLAG, &WEIGHT, &FULL_DATA, &TABLA_VARCLUSTER, &BEST_R2_MIN, TABLA_MODULO1, &AUX_FRANJAS)`
 
     - `REGRESSION_TRAIN(TABLA_MODULO1, &FLAG, &WEIGHT, &AUX_FRANJAS, &SEGMENTO, &MODELO_MOD1, &BETAS_MOD1, &TABLE_PRED_MOD1)`<sup id="a1-1-16">[[16]](#f1-1-16)</sup>
 
-## 1.2. Transformer [↩](#1-modelo-de-capacidad-de-pago-)
+## 1.2. Transformer [↩](#1-modelo-de-regresion-)
+
+_Ir a la sección_ [_Notas y comentarios_](#notas--comentarios-sección-12-transformer-)
 
 * Define la macro `TRANSFORMER` que da nombre al programa:
 
@@ -221,7 +223,7 @@ Incluye a su vez los siguientes componentes (macros):
 
     `TRANSFORMER(&TABLA_MODELO, CAPACIDAD, WEIGHTS, &SEGMENTO, 0.8)`
 
-## 1.3. Modeler [↩](#1-modelo-de-capacidad-de-pago-)
+## 1.3. Modeler [↩](#1-modelo-de-regresion-)
 
 * Define la macro `MODELER` que da nombre al programa:
 
@@ -254,14 +256,16 @@ Incluye a su vez los siguientes componentes (macros):
 
     `MODELER(&TABLA_MODELO, CAPACIDAD, WEIGHT_AUX)`
 
-# 2. Modelo de contactabilidad [↩](#readme-sas-cdm)
+# 2. Modelo de Clasificacion [↩](#readme-sas-cdm)
 
 El modelo de contactabilidad está compuesto por 3 programas principales:
 1. [**Variables**](#21-variables-)
 2. [**Transformer**](#22-transformer-)
 3. [**Modeler**](#23-modeler-)
 
-## 2.1. Variables [↩](#2-modelo-de-contactabilidad-):
+## 2.1. Variables [↩](#2-modelo-de-clasificacion-):
+
+_Ir a la sección_ [_Notas y comentarios_](#notas--comentarios-sección-21-variables-)
 
 * Define una serie de parámetros del proceso del módulo 2
 
@@ -283,34 +287,35 @@ El modelo de contactabilidad está compuesto por 3 programas principales:
             2.	Crea la tabla `AUX_MODEL_NUM_NO_FLAG`, idéntica a la anterior pero excluyendo la columna `&FLAG` (el target del modelo). Guarda los nombres de dichas columnas en `&VARS_MODEL_NUM_NO_FLAG`.
 
     - Ejecuta `PROC DMDB` con la siguiente estructura:
-    ```
-    PROC DMDB DATA=&TAULA
-    	VAROUT=WORK.NUMERICAL_VARS
-    	CLASSOUT=WORK.CLASSIFICATION_VARS;
-    	CLASS &VARS_MODEL_CAT;
-    	TARGET &FLAG;
-    	VAR &VARS_MODEL_NUM;
-    RUN;
-    ```
-    A continuación se describe cada paso del código anterior:
 
-     `PROC DMDB DATA=&TAULA`:
-     > El objetivo de `PROC DMDB` es generar un catálogo de metadatos sobre los datos de entrada, basándose en los roles que juegan las variables en el modelo.
+        ```
+        PROC DMDB DATA=&TAULA
+        	VAROUT=WORK.NUMERICAL_VARS
+        	CLASSOUT=WORK.CLASSIFICATION_VARS;
+        	CLASS &VARS_MODEL_CAT;
+        	TARGET &FLAG;
+        	VAR &VARS_MODEL_NUM;
+        RUN;
+        ```
+        A continuación se describe cada paso del código anterior:
 
-     `VAROUT=WORK.NUMERICAL_VARS`
-     > Indica la tabla en la que se guardarán los metadatos de las variables numéricas.
+         `PROC DMDB DATA=&TAULA`:
+         > El objetivo de `PROC DMDB` es generar un catálogo de metadatos sobre los datos de entrada, basándose en los roles que juegan las variables en el modelo.
 
-     `CLASSOUT=WORK.CLASSIFICATION_VARS`
-     > Análoga a la anterior, indica la tabla en la que se guardarán los metadatos de las variables de clasificación.
+         `VAROUT=WORK.NUMERICAL_VARS`
+         > Indica la tabla en la que se guardarán los metadatos de las variables numéricas.
 
-     `CLASS &VARS_MODEL_CAT`
-     > Variables cuyas combinaciones definen subgrupos (“buckets”) de análisis. Para cada una de ellas, se genera la siguiente información: categoría (class level value), frecuencia e información de ordenación.
+         `CLASSOUT=WORK.CLASSIFICATION_VARS`
+         > Análoga a la anterior, indica la tabla en la que se guardarán los metadatos de las variables de clasificación.
 
-     `TARGET &FLAG`
-     > Identifica variable target del modelo, que deberá incluirse también en las listas de variables VAR o CLASS.
+         `CLASS &VARS_MODEL_CAT`
+         > Variables cuyas combinaciones definen subgrupos (“buckets”) de análisis. Para cada una de ellas, se genera la siguiente información: categoría (class level value), frecuencia e información de ordenación.
 
-     `VAR &VARS_MODEL_NUM`
-     > Identifica variables de análisis y su orden en los resultados. El catálogo de metadatos contiene los siguientes estadísticos: `N`, `NMISS`, `MIN`, `MAX`, `SUM`, `SUMWGT`, `CSS`, `USS`, `STD`, `SKEWNESS`, y `KURTOSIS`.
+         `TARGET &FLAG`
+         > Identifica variable target del modelo, que deberá incluirse también en las listas de variables VAR o CLASS.
+
+         `VAR &VARS_MODEL_NUM`
+         > Identifica variables de análisis y su orden en los resultados. El catálogo de metadatos contiene los siguientes estadísticos: `N`, `NMISS`, `MIN`, `MAX`, `SUM`, `SUMWGT`, `CSS`, `USS`, `STD`, `SKEWNESS`, y `KURTOSIS`.
 
     - Inserta en la variable `&CONSTANT_VARS` los nombres de las variables numéricas de la tabla `WORK.NUMERICAL_VARS` generada en el paso anterior que cumplan la condición `MIN=MAX`.
 
@@ -318,7 +323,8 @@ El modelo de contactabilidad está compuesto por 3 programas principales:
 
     - Ejecuta la macro `CHECK_CATEGORICS(&TABLA_MODELO)` sobre la tabla generada en el paso anterior.
 
-## 2.2. Transformer [↩](#2-modelo-de-contactabilidad-):
+## 2.2. Transformer [↩](#2-modelo-de-clasificacion-):
+_Ir a la sección_ [_Notas y comentarios_](#notas--comentarios-sección-22-transformer-)
 
 * Define la macro `TRANSFORMER` que da nombre al programa:
 
@@ -383,17 +389,132 @@ El modelo de contactabilidad está compuesto por 3 programas principales:
 
     `TRANSFORMER(&TABLA_MODELO., FLAGRPC, WEIGHTS, 0, 90, &SEGMENTO_TABLA., 0.8)`
 
-## 2.3. Modeler [↩](#2-modelo-de-contactabilidad-):
+## 2.3. Modeler [↩](#2-modelo-de-clasificacion-):
+
+_Ir a la sección_ [_Notas y comentarios_](#notas--comentarios-sección-23-modeler-)
 
 * Define las macros correspondientes a varios modelos de clasificación:
+    - [**Logistic**](#logistic-model-)
     - [**Treebost classification**](#treeboost-classification-model-)
     - [**Tree classification**](#tree-classification-model-)
     - [**PCA classification**](#pca-classification-model-)
     - [**Cluster classification**](#cluster-classification-model-)
 
+### Logistic model [↩](#23-modeler-)
+
 ### Treeboost classification model [↩](#23-modeler-)
 
+Modelo mediante **gradient boosting machine**. Se separa también en train y test y se busca la **profundidad óptima del árbol** para no hacer overfitting y maximizar R<sup>2</sup> de test<sup id="a2-3-1">[[1]](#f2-3-1)</sup>.
+
+    `TREEBOOST_CLASSIFICATION_MODEL(TRAIN, TEST, FLAG, WEIGHT, MODELO, RESULTADOS_TREEBOOST, MAX_ITER, DEPTH)`
+
+* Busca el número óptimo de iteraciones que maximiza el IP de test iterando de 1 al parámetro `&MAX_ITER`. En cada iteración, realiza las siguientes operaciones:
+
+    	`%DO I=1 %TO &MAX_ITER.;`
+
+    - Calcula el número de iteraciones del treeboost:
+
+        `%LET ITERATIONS = %EVAL(2**&I.);`
+
+    - Entrena el modelo con el número de iteraciones calculado en el paso anterior sobre el train set:
+
+        `%CLASSTREEBOOST_TRAIN(&TRAIN., &FLAG., &WEIGHT., &MODELO_GBM., &ITERATIONS., &DEPTH.);`
+
+    - Realiza una predicción sobre el test set:
+
+        `%CLASSTREEBOOST_PREDICT(&TEST., &FLAG., &MODELO_GBM.);`
+
+    - Por último, tras ejecutar cada iteración, se guardan las siguientes métricas en `&RESULTADOS_TREEBOOST`:
+
+        - **Franja:** `&DEPTH`
+        - **Iteraciones:** `&ITERATIONS`
+        - **IP train:** `&IP_TREEBOST_TRAIN`
+        - **IP test:** `&IP_TREEBOOST_TEST`
+
+        A continuación se adunta el código fuente:
+            ```
+            PROC SQL;
+    		INSERT INTO &RESULTADOS_TREEBOOST.
+    	 		SET
+    			 Franja = &DEPTH.,
+    			 ITER = &ITERATIONS.,
+    			 IP_TRAIN = &IP_TREEBOST_TRAIN.,
+    			 IP_TEST = &IP_TREEBOOST_TEST.;
+    		QUIT;
+            ```
+
+* Una vez guardados los resultados de las distintas iteraciones, se selecciona la que tenga el **máximo IP test** y se guarda en la variable `&BEST_ITER`:
+
+    ```
+    PROC SQL;
+	SELECT ITER INTO: BEST_ITER FROM &RESULTADOS_TREEBOOST.
+    HAVING IP_TEST = MAX(IP_TEST);
+	QUIT;
+    ```
+> **NOTA:**
+> A PARTIR DE AQUÍ ES V7. Revisar TODOS los puntos anteriores y su correspondencia en la V7.
+
+* Se vuelve a entrenar el modelo treeboost con el número óptimo de iteraciones seleccionado en el paso anterior:
+
+    `%CLASSTREEBOOST_TRAIN(&FULL_DATA., &FLAG., &WEIGHT., &MODELO_GBM., 32/*&BEST_ITER.*/, &DEPTH.);`
+
+> **Nota:**
+> En el Modeler v7 todos los pasos anteriores salvo el último están comentados. Creo que esto se puede deber a que ya se había encontrado el número óptimo de iteraciones (i.e. 32) y se ha dejado fijo así para que ejecute más rápido.
+
 ### Tree classification model [↩](#23-modeler-)
+
+Modelo mediante **árboles de decisión**. Se separa también en train y test y se busca la **profundidad óptima del árbol** para no hacer overfitting y maximizar R<sup>2</sup> de test.
+
+* Busca la profundidad óptima del árbol que maximiza el IP de test iterando de 1 a 5<sup id="a2-3-2">[[2]](#f2-3-2)</sup>. En cada iteración, realiza las siguientes operaciones:
+
+    `%DO I=1 %TO 5;`
+
+    - Calcula la profundidad del árbol de decisión:
+
+        `%LET DEPTH = %EVAL(10*&I.);`<sup id="a2-3-3">[[3]](#f2-3-3)</sup>
+
+    - Entrena el modelo con la profundidad calculada en el paso anterior sobre el train set:
+
+        `%CLASSTREE_TRAIN(&TRAIN., &FLAG., &W., &MODELO., &DEPTH.);`
+
+    - Realiza una predicción sobre el test set:
+
+        `%CLASSTREE_PREDICT(&TEST., &FLAG., &W., &MODELO., PRED_TEST_TREE);`
+
+    - Por último, tras ejecutar cada iteración, se guardan las siguientes métricas en `&RESULTADOS_TREE`:
+
+        - **Franja:** `"PRE90"`
+        - **Depth:** `&DEPTH`
+        - **IP train:** `&IP_TREE_TRAIN`
+        - **IP test:** `&IP_TREE_TEST`
+
+        A continuación se adunta el código fuente:
+            ```
+            PROC SQL;
+			INSERT INTO &RESULTADOS_TREE.
+		 		SET
+				 Franja = "PRE90",
+				 DEPTH = &DEPTH.,
+				 IP_TRAIN = &IP_TREE_TRAIN.,
+				 IP_TEST = &IP_TREE_TEST.;
+		    QUIT;
+            ```
+
+* Una vez guardados los resultados de las distintas iteraciones, se selecciona la profundidad que tenga el **máximo IP test** y se guarda en la variable `&BEST_DEPTH`:
+
+```
+PROC SQL;
+SELECT
+    DEPTH
+INTO: BEST_DEPTH
+FROM &RESULTADOS_TREE.
+HAVING IP_TEST = MAX(IP_TEST);
+QUIT;
+```
+
+* Se vuelve a entrenar el modelo de classification tree con la profundidad óptima seleccionada en el paso anterior:
+
+    `%CLASSTREE_TRAIN(&FULL_DATA., &FLAG., &WEIGHT., &MODELO_ARBOL., &BEST_DEPTH.);`
 
 ### PCA classification model [↩](#23-modeler-)
 
@@ -452,3 +573,12 @@ Entiendo que el `LOG()` es para limitar el peso de los valores muy elevados en e
 ### Notas / comentarios sección 2.2. Transformer [↩](#22-transformer-)
 
 <a id="f2-2-1"><sup>[1]</a></sup> De momento, `&AUX_FRANJAS` y `&AUX_FRANJAS_CORTE = TOT (V6)` [↩](#a2-2-1)
+
+---
+### Notas / comentarios sección 2.3. Modeler [↩](#23-modeler-)
+
+<a id="f2-3-1"><sup>[1]</a></sup> Parece que todos estos comentarios están copiados y pegados, y realmente no describen lo que se está buscando conseguir con el código al que se refieren. [↩](#a2-3-1)
+
+<a id="f2-3-2"><sup>[2]</a></sup> ¿Por qué no se introduce `&MAX_ITER` como parámetro, tal y como se hacía en el treeboost? [↩](#a2-3-2)
+
+<a id="f2-3-3"><sup>[3]</a></sup> ¿Por qué en el árbol de regresión era `5*&I` y ahora en el de clasificación es `10*&I`? [↩](#a2-3-3)
