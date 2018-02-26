@@ -180,7 +180,7 @@ Incluye a su vez los siguientes componentes (macros):
 
 * Define la macro `TRANSFORMER` que da nombre al programa:
 
- `TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, SEGMENT, TRAIN_TEST_SPLIT)`
+    `TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, SEGMENT, TRAIN_TEST_SPLIT)`
 
     - Ejecuta las macros `INICIALIZACION_R2(&TABLA_R2)` e `INICIALIZACION_CLUSTER(&TABLA_VARCLUSTER)`
 
