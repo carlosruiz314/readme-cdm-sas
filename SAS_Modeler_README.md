@@ -8,11 +8,11 @@ El SAS está compuesto por 3 flujos principales:
 # 1. Modelo de capacidad de pago [↩](#readme-sas-cdm)
 
 El modelo de capacidad de pago está compuesto por 3 programas principales:
-1. [**Vars y macros**](#11-vars-y-macros)
-2. [**Transformer**](#12-transformer)
-3. [**Modeler**](#13-modeler)
+1. [**Vars y macros**](#11-vars-y-macros-)
+2. [**Transformer**](#12-transformer-)
+3. [**Modeler**](#13-modeler-)
 
-## 1.1. Vars y macros [↩](#1-modelo-de-capacidad-de-pago)
+## 1.1. Vars y macros [↩](#1-modelo-de-capacidad-de-pago-)
 
 * Parte de la tabla de entrada del modelo, añade el número de fila<sup name="a1-1-1">[[1]](#f1-1-1)</sup> y calcula:
   `CAPACIDAD2 = SIGN(CAPACIDAD)*LOG(ABS(CAPACIDAD)+1)`<sup id="a1-1-2">[[2]](#f1-1-2)</sup>  
@@ -22,26 +22,28 @@ El modelo de capacidad de pago está compuesto por 3 programas principales:
 * Cuenta el número de registros agrupando por `&ID_FECHA`<sup id="a1-1-3">[[3]](#f1-1-3)</sup>, `&IDENTIFICADOR`<sup id="a1-1-4">[[4]](#f1-1-4)</sup>
 
 * Define varias macros que encapsulan distintos modelos de clasificación:
-    - [**Lasso regression**](#lasso-regression-5)
-    - [**Treeboost regression**](#treeboost-regression)
-    - [**Tree regression**](#tree-regression)
-    - [**PCA Regression**](#pca-regression)
-    - [**Cluster regression**](#cluster-regression)
+    - [**Lasso regression**](#lasso-regression-5-)
+    - [**Treeboost regression**](#treeboost-regression-)
+    - [**Tree regression**](#tree-regression-)
+    - [**PCA Regression**](#pca-regression-)
+    - [**Cluster regression**](#cluster-regression-)
 
-### Lasso regression<sup id="a1-1-5">[[5]](#f1-1-5)</sup> [↩](#11-vars-y-macros):
+[Notas y comentarios](#notas--comentarios-sección-11-vars-y-macros-)
+
+### Lasso regression<sup id="a1-1-5">[[5]](#f1-1-5)</sup> [↩](#11-vars-y-macros-):
 
 `LASSO_REGRESSION_MODEL(DATA, FLAG, MODELO)`
 
 Incluye a su vez los siguientes componentes (macros):
-- Training set:
+- **Training set:**
 
  `LASSO_TRAIN(&DATA, &FLAG, &WEIGHT, &MODELO)`
 
-- Test set<sup id="a1-1-6">[[6]](#f1-1-6)</sup>:
+- **Test set<sup id="a1-1-6">[[6]](#f1-1-6)</sup>:**
 
  `LASSO_PREDICT(&DATA, &FLAG, &MODELO, PRED_TEST_LASSO)`
 
-### Treeboost regression [↩](#11-vars-y-macros):
+### Treeboost regression [↩](#11-vars-y-macros-):
 
 `TREEBOOST_REGRESSION_MODEL(&TRAIN_DATA, &TEST_DATA, &FLAG, &WEIGHT, &MODELO, &RESULTADOS_TREEBOOST, &DEPTH)`  
 
@@ -50,11 +52,11 @@ Incluye a su vez los siguientes componentes (macros):
  `&ITERACIONES = 2^I`<sup id="a1-1-7">[[7]](#f1-1-7)</sup>
 
 * En cada una de las iteraciones, ejecutará los siguientes componentes (macros):
-    - Training set:
+    - **Training set:**
 
     `REGTREEBOOST_TRAIN(&TRAIN_DATA, &FLAG, &WEIGHT, &MODELO_GBM, &ITERATIONS, &DEPTH)`
 
-    - Test set:
+    - **Test set:**
 
     `REGTREEBOOST_PREDICT(&TEST_DATA, &FLAG, &MODELO_GBM, PRED_TEST_TREEBOOST)`
 
@@ -72,7 +74,7 @@ Incluye a su vez los siguientes componentes (macros):
 
  `REGTREEBOOST_TRAIN(&FULL_DATA, &FLAG, &WEIGHT, &MODELO_GBM, &BEST_ITER, 10)`<sup id="a1-1-10">[[10]](#f1-1-10)</sup>
 
-### Tree regression [↩](#11-vars-y-macros):
+### Tree regression [↩](#11-vars-y-macros-):
 
 `TREE_REGRESSION_MODEL(TRAIN_DATA, TEST_DATA, FLAG, MODELO, RESULTADOS_TREE)`
 
@@ -99,7 +101,7 @@ Incluye a su vez los siguientes componentes (macros):
 * Una vez se tienen las iteraciones óptimas, se entrena de nuevo el modelo, cambiando algunos parámetros:
 `REGTREE_TRAIN(&FULL_DATA, &FLAG, &WEIGHT, &MODELO_ARBOL, &BEST_DEPTH)`<sup id="a1-1-12">[[12]](#f1-1-12)</sup>
 
-### PCA regression [↩](#11-vars-y-macros):
+### PCA regression [↩](#11-vars-y-macros-):
 
 `PCA_REGRESSION_MODEL(TRAIN_DATA, TEST_DATA, FLAG, TRANSF_PCA, MODELO_PCA, RESULTADOS_PCA)`
 
@@ -129,22 +131,26 @@ Incluye a su vez los siguientes componentes (macros):
 * Una vez se tiene el óptimo de componentes principales, se entrena de nuevo el modelo, cambiando algunos parámetros:
 `REGRESSION_PCA_TRAIN(&FULL_DATA, &FLAG, &BEST_PC, &MODELO_PCA, &TRANSF_PCA)`<sup id="a1-1-14">[[14]](#f1-1-14)</sup>
 
-### Cluster regression [↩](#11-vars-y-macros):
+### Cluster regression [↩](#11-vars-y-macros-):
 
 `CLUSTER_REGRESSION_MODEL(TRAIN_DATA, TEST_DATA, FLAG, WEIGHT, MODELO_MOD1, SEGMENTO, AUX_FRANJAS, TABLA_VARCLUSTER, PRED_VAR, BETAS_MOD1, TABLE_PRED_MOD1, RESULTADOS_PCA)`
 
 * Hace un bucle de 14 iteraciones para calcular el IP univariante mínimo necesario para seleccionar una variable:
-`&IND_MIN = 0.07 - &I * 0.005`
+
+ `&IND_MIN = 0.07 - &I * 0.005`
 
 * En cada una de las iteraciones, ejecutará los siguientes componentes (macros):
     - **Selección variables:**
-    `SELECCION_VARS(“REG”, &FLAG, &WEIGHT, &TRAIN_DATA, &TABLA_VARCLUSTER, &IND_MIN, TABLA_MODULO1, &AUX_FRANJAS)`
+
+     `SELECCION_VARS(“REG”, &FLAG, &WEIGHT, &TRAIN_DATA, &TABLA_VARCLUSTER, &IND_MIN, TABLA_MODULO1, &AUX_FRANJAS)`
 
     - **Training set:**
-    `REGRESSION_TRAIN(TABLA_MODULO1, &FLAG, &WEIGHT, &AUX_FRANJAS, &SEGMENTO, &MODELO_MOD1, &BETAS_MOD1, &TABLE_PRED_MOD1)`
+
+     `REGRESSION_TRAIN(TABLA_MODULO1, &FLAG, &WEIGHT, &AUX_FRANJAS, &SEGMENTO, &MODELO_MOD1, &BETAS_MOD1, &TABLE_PRED_MOD1)`
 
     - **Test set:**
-    `REGRESSION_PREDICT(&TEST_DATA, &FLAG, &MODELO_MOD1, PRED_TEST_CLUSTER, &PRED_VAR)`
+
+     `REGRESSION_PREDICT(&TEST_DATA, &FLAG, &MODELO_MOD1, PRED_TEST_CLUSTER, &PRED_VAR)`
 
 * Tras ejecutar cada iteración, se guardan las siguientes métricas en `&RESULTADOS_CLUSTER`:
     - **Franja:** `&AUX_FRANJAS`
@@ -162,42 +168,52 @@ Incluye a su vez los siguientes componentes (macros):
 
     - `REGRESSION_TRAIN(TABLA_MODULO1, &FLAG, &WEIGHT, &AUX_FRANJAS, &SEGMENTO, &MODELO_MOD1, &BETAS_MOD1, &TABLE_PRED_MOD1)`<sup id="a1-1-16">[[16]](#f1-1-16)</sup>
 
-## 1.2. Transformer [↩](#1-modelo-de-capacidad-de-pago)
+## 1.2. Transformer [↩](#1-modelo-de-capacidad-de-pago-)
 
 * Define la macro `TRANSFORMER` que da nombre al programa:
-`TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, SEGMENT, TRAIN_TEST_SPLIT)`
+
+ `TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, SEGMENT, TRAIN_TEST_SPLIT)`
 
     - Ejecuta las macros `INICIALIZACION_R2(&TABLA_R2)` e `INICIALIZACION_CLUSTER(&TABLA_VARCLUSTER)`
 
     - Hace un bucle de 1 a `&FRANJAS_LEN`<sup id="a1-2-1">[[1]](#f1-2-1)</sup>. En cada iteración, ejecuta los siguientes componentes (macros):
 
         - Particionado por franja temporal:
-        `INICIALIZAR_TABLAS(&AUX_FRANJAS, &SEGMENTO, CAP)`
+
+         `INICIALIZAR_TABLAS(&AUX_FRANJAS, &SEGMENTO, CAP)`
 
         - Filtrado por días de impago para reducir imbalancement:
-        `FILTRAR_DATOS(&BASE_A_PARTIR, &TABLA_FILTRO_DIAS, &AUX_FRANJAS_CORTE, &VAR_NOT_ENTERING, &SEGMENT, &AUX_FRANJAS)`
+
+         `FILTRAR_DATOS(&BASE_A_PARTIR, &TABLA_FILTRO_DIAS, &AUX_FRANJAS_CORTE, &VAR_NOT_ENTERING, &SEGMENT, &AUX_FRANJAS)`
 
         - Genera la tabla `&FULL_DATA` a partir de la salida del paso anterior (`&TABLA_FILTRO_DIAS`), y revierte la aplicación del logaritmo sobre la capacidad para poder calcular la mediana sobre el resultado:
         `&MEDIA = MEDIAN(SIGN(&FLAG)*EXP(ABS(&FLAG))-1)`<sup id="a1-2-2">[[2]](#f1-2-2)</sup>
 
         - Filtra casos anómalos de la base, conservando lo que se queda entre los percentiles 5 y 90:
-        `REMOVE_OUTLIERS(&FULL_DATA, CAPACIDAD, P_INF=P5, P_SUP=P90)`
+
+         `REMOVE_OUTLIERS(&FULL_DATA, CAPACIDAD, P_INF=P5, P_SUP=P90)`
 
         - Calcula el R2 univariante para las variables de la muestra:
-        `CALCULO_R2_UNIVARIANTE(&FULL_DATA, &FLAG, &AUX_FRANJAS_CORTE)`
 
-        - Calcula clusters de variables correlacionadas del dataset: `CLUSTERS_Y_R2(&FULL_DATA, &AUX_FRANJAS_CORTE, &FLAG)`
+         `CALCULO_R2_UNIVARIANTE(&FULL_DATA, &FLAG, &AUX_FRANJAS_CORTE)`
+
+        - Calcula clusters de variables correlacionadas del dataset:
+
+         `CLUSTERS_Y_R2(&FULL_DATA, &AUX_FRANJAS_CORTE, &FLAG)`
 
         - Cálculo de PCA para las variables del dataset:
-        `PCA_TRAIN(FULL_DATA, &TRANSF_PCA, PCData, &FLAG)`
+
+         `PCA_TRAIN(FULL_DATA, &TRANSF_PCA, PCData, &FLAG)`
 
         - División de la tabla en train set y test set:
-        `TRAIN_TEST_SPLIT(&FULL_DATA, &TRAIN_DATA, &TEST_DATA, &TRAIN_TEST_SPLIT, &FLAG)`
+
+         `TRAIN_TEST_SPLIT(&FULL_DATA, &TRAIN_DATA, &TEST_DATA, &TRAIN_TEST_SPLIT, &FLAG)`
 
 * Llama la macro `TRANSFORMER` que ha definido en el paso anterior:
-`TRANSFORMER(&TABLA_MODELO, CAPACIDAD, WEIGHTS, &SEGMENTO, 0.8)`
 
-## 1.3. Modeler [↩](#1-modelo-de-capacidad-de-pago)
+ `TRANSFORMER(&TABLA_MODELO, CAPACIDAD, WEIGHTS, &SEGMENTO, 0.8)`
+
+## 1.3. Modeler [↩](#1-modelo-de-capacidad-de-pago-)
 
 * Define la macro `MODELER` que da nombre al programa:
 `MODELER(BASE_A_PARTIR, FLAG, WEIGHT)`
@@ -229,7 +245,12 @@ Incluye a su vez los siguientes componentes (macros):
 
 # 2. Modelo de contactabilidad [↩](#readme-sas-cdm)
 
-## 2.1. Variables:
+El modelo de contactabilidad está compuesto por 3 programas principales:
+1. [**Variables**](#21-variables-)
+2. [**Transformer**](#22-transformer-)
+3. [**Modeler**](#23-modeler-)
+
+## 2.1. Variables [↩](#2-modelo-de-contactabilidad-):
 
 * Define una serie de parámetros del proceso del módulo 2
 
@@ -286,10 +307,12 @@ Incluye a su vez los siguientes componentes (macros):
 
     - Ejecuta la macro `CHECK_CATEGORICS(&TABLA_MODELO)` sobre la tabla generada en el paso anterior.
 
-## 2.2. Transformer:
+## 2.2. Transformer [↩](#2-modelo-de-contactabilidad-):
 
 * Define la macro `TRANSFORMER` que da nombre al programa:
-`TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, MIN_DIAS, MAX_DIAS, SEGMENT, TRAIN_TEST_SPLIT)`:
+
+ `TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, MIN_DIAS, MAX_DIAS, SEGMENT, TRAIN_TEST_SPLIT)`:
+
     - Hace un bucle de 1 a `&FRANJAS_LEN`  para generar una partición por franja temporal. En cada iteración, ejecuta los siguientes componentes (macros):
         - Genera las variables `&AUX_FRANJAS` y `&AUX_FRANJAS_CORTE`.
 
@@ -313,51 +336,59 @@ Incluye a su vez los siguientes componentes (macros):
         `INICIALIZAR_TABLAS(&AUX_FRANJAS, &SEGMENTO, CON)`
 
         - Se filtra la tabla por días de impago:
-        `FILTRAR_DATOS_DIAS(&BASE_A_PARTIR, &TABLA_FILTRO_DIAS, &MIN_DIAS, &MAX_DIAS, &AUX_FRANJAS_CORTE, &VAR_NOT_ENTERING, &SEGMENT)`
+
+         `FILTRAR_DATOS_DIAS(&BASE_A_PARTIR, &TABLA_FILTRO_DIAS, &MIN_DIAS, &MAX_DIAS, &AUX_FRANJAS_CORTE, &VAR_NOT_ENTERING, &SEGMENT)`
 
         - Se reduce el imbalancement:
-        `IMBALANCE_REDUCTION(&TABLA_FILTRO_DIAS, &FULL_DATA, 0.1, &FLAG)`
+
+         `IMBALANCE_REDUCTION(&TABLA_FILTRO_DIAS, &FULL_DATA, 0.1, &FLAG)`
 
         - Hay una serie de transformaciones comentadas porque son necesarias únicamente para modelos lineales. Dado que no se están usando modelos lineales, se excluyen de la macro `TRANSFORMER`:
 
             - Cálculo del WOE (Weight Of Evidence) para las variables categóricas:
-            `TRANSF_CAT_WOE(WORK, &FULL_DATA, &AUX_FRANJAS_CORTE, &FLAG)`
+
+             `TRANSF_CAT_WOE(WORK, &FULL_DATA, &AUX_FRANJAS_CORTE, &FLAG)`
 
             - Cálculo del IP univariante para las variables:
-            `CALCULO_IP_UNIVARIANTE(&FULL_DATA, &FLAG, &AUX_FRANJAS_CORTE)`
+
+             `CALCULO_IP_UNIVARIANTE(&FULL_DATA, &FLAG, &AUX_FRANJAS_CORTE)`
 
             - Cálculo de clusters de variables del datatrain (variables correlacionadas):
-            `CLUSTERS_Y_IP(&FULL_DATA., &AUX_FRANJAS_CORTE., &FLAG.)`
+
+             `CLUSTERS_Y_IP(&FULL_DATA., &AUX_FRANJAS_CORTE., &FLAG.)`
 
             - Cálculo del PCA para las variables
-            `PCA_TRAIN(&FULL_DATA., &TRANSF_PCA., PCData, &FLAG.)`
+
+             `PCA_TRAIN(&FULL_DATA., &TRANSF_PCA., PCData, &FLAG.)`
 
         - Se estratifican los datos de train y test, y se divide la tabla de entrada en train set y test set:
-        `STRAT_TRAIN_TEST_SPLIT(&FULL_DATA., &TRAIN_DATA., &TEST_DATA., 0.8, &FLAG.)`
+
+         `STRAT_TRAIN_TEST_SPLIT(&FULL_DATA., &TRAIN_DATA., &TEST_DATA., 0.8, &FLAG.)`
 
         - Hace `DROP` de la tabla `&TABLA_FILTRO_DIAS`, que se usaba para la reducción de imbalancement en un paso anterior.
 
 * Llama a la macro `TRANSFORMER` que ha definido en el paso anterior:
-`TRANSFORMER(&TABLA_MODELO., FLAGRPC, WEIGHTS, 0, 90, &SEGMENTO_TABLA., 0.8)`
 
-## 2.3. Modeler:
+ `TRANSFORMER(&TABLA_MODELO., FLAGRPC, WEIGHTS, 0, 90, &SEGMENTO_TABLA., 0.8)`
+
+## 2.3. Modeler [↩](#2-modelo-de-contactabilidad-):
 
 * Define las macros correspondientes a varios modelos de clasificación:
-    - [**Treebost classification**](#treeboost-classification-model)
-    - [**Tree classification**](#tree-classification-model)
-    - [**PCA classification**](#pca-classification-model)
-    - [**Cluster classification**](#cluster-classification-model)
+    - [**Treebost classification**](#treeboost-classification-model-)
+    - [**Tree classification**](#tree-classification-model-)
+    - [**PCA classification**](#pca-classification-model-)
+    - [**Cluster classification**](#cluster-classification-model-)
 
-### Treeboost classification model [↩](#23-modeler)
+### Treeboost classification model [↩](#23-modeler-)
 
-### Tree classification model [↩](#23-modeler)
+### Tree classification model [↩](#23-modeler-)
 
-### PCA classification model [↩](#23-modeler)
+### PCA classification model [↩](#23-modeler-)
 
 ### Cluster classification model [↩](#23-modeler)
 
 ---
-**Notas / comentarios sección 1.1. Vars y macros**
+### Notas / comentarios sección 1.1. Vars y macros [↩](#11-vars-y-macros-)
 
 <a name="f1-1-1"><sup>[1]</a></sup> Si sólo se usa para contar y calcular `WEIGHT_AUX` no haría falta incorporar el campo; `COUNT(1)` ya serviría. [↩](#a1-1-1)
 
