@@ -1,13 +1,18 @@
 # Readme SAS CdM
 
 El SAS está compuesto por 3 flujos principales:
-1.	[**Variables y Macros**]()
+1.	**Variables y Macros**
 2.	[**Modelo Capacidad de Pago**](#1-modelo-de-capacidad-de-pago)
 3.	[**Modelo de Contactabilidad**](#2-modelo-de-contactabilidad)
 
-# 1. Modelo de capacidad de pago
+# 1. Modelo de capacidad de pago [↩](#readme-sas-cdm)
 
-## 1.1. Vars y macros
+El modelo de capacidad de pago está compuesto por 3 programas principales:
+1. [**Vars y macros**](#11-vars-y-macros)
+2. [**Transformer**](#12-transformer)
+3. [**Modeler**](#13-modeler)
+
+## 1.1. Vars y macros [↩](#1-modelo-de-capacidad-de-pago)
 
 * Parte de la tabla de entrada del modelo, añade el número de fila<sup name="a1-1-1">[[1]](#f1-1-1)</sup> y calcula:
   `CAPACIDAD2 = SIGN(CAPACIDAD)*LOG(ABS(CAPACIDAD)+1)`<sup id="a1-1-2">[[2]](#f1-1-2)</sup>  
@@ -17,8 +22,13 @@ El SAS está compuesto por 3 flujos principales:
 * Cuenta el número de registros agrupando por `&ID_FECHA`<sup id="a1-1-3">[[3]](#f1-1-3)</sup>, `&IDENTIFICADOR`<sup id="a1-1-4">[[4]](#f1-1-4)</sup>
 
 * Define varias macros que encapsulan distintos modelos de clasificación:
+    - [**Lasso regression**](#lasso-regression-5)
+    - [**Treeboost regression**](#treeboost-regression)
+    - [**Tree regression**](#tree-regression)
+    - [**PCA Regression**](#pca-regression)
+    - [**Cluster regression**](#cluster-regression)
 
-### Lasso regression<sup id="a1-1-5">[[5]](#f1-1-5)</sup>:
+### Lasso regression<sup id="a1-1-5">[[5]](#f1-1-5)</sup> [↩](#11-vars-y-macros):
 
 `LASSO_REGRESSION_MODEL(DATA, FLAG, MODELO)`
 
@@ -31,7 +41,7 @@ Incluye a su vez los siguientes componentes (macros):
 
  `LASSO_PREDICT(&DATA, &FLAG, &MODELO, PRED_TEST_LASSO)`
 
-### Treeboost regression:
+### Treeboost regression [↩](#11-vars-y-macros):
 
 `TREEBOOST_REGRESSION_MODEL(&TRAIN_DATA, &TEST_DATA, &FLAG, &WEIGHT, &MODELO, &RESULTADOS_TREEBOOST, &DEPTH)`  
 
@@ -62,7 +72,7 @@ Incluye a su vez los siguientes componentes (macros):
 
  `REGTREEBOOST_TRAIN(&FULL_DATA, &FLAG, &WEIGHT, &MODELO_GBM, &BEST_ITER, 10)`<sup id="a1-1-10">[[10]](#f1-1-10)</sup>
 
-### Tree regression:
+### Tree regression [↩](#11-vars-y-macros):
 
 `TREE_REGRESSION_MODEL(TRAIN_DATA, TEST_DATA, FLAG, MODELO, RESULTADOS_TREE)`
 
@@ -89,7 +99,7 @@ Incluye a su vez los siguientes componentes (macros):
 * Una vez se tienen las iteraciones óptimas, se entrena de nuevo el modelo, cambiando algunos parámetros:
 `REGTREE_TRAIN(&FULL_DATA, &FLAG, &WEIGHT, &MODELO_ARBOL, &BEST_DEPTH)`<sup id="a1-1-12">[[12]](#f1-1-12)</sup>
 
-### PCA regression:
+### PCA regression [↩](#11-vars-y-macros):
 
 `PCA_REGRESSION_MODEL(TRAIN_DATA, TEST_DATA, FLAG, TRANSF_PCA, MODELO_PCA, RESULTADOS_PCA)`
 
@@ -119,7 +129,7 @@ Incluye a su vez los siguientes componentes (macros):
 * Una vez se tiene el óptimo de componentes principales, se entrena de nuevo el modelo, cambiando algunos parámetros:
 `REGRESSION_PCA_TRAIN(&FULL_DATA, &FLAG, &BEST_PC, &MODELO_PCA, &TRANSF_PCA)`<sup id="a1-1-14">[[14]](#f1-1-14)</sup>
 
-### Cluster regression:
+### Cluster regression [↩](#11-vars-y-macros):
 
 `CLUSTER_REGRESSION_MODEL(TRAIN_DATA, TEST_DATA, FLAG, WEIGHT, MODELO_MOD1, SEGMENTO, AUX_FRANJAS, TABLA_VARCLUSTER, PRED_VAR, BETAS_MOD1, TABLE_PRED_MOD1, RESULTADOS_PCA)`
 
@@ -152,7 +162,7 @@ Incluye a su vez los siguientes componentes (macros):
 
     - `REGRESSION_TRAIN(TABLA_MODULO1, &FLAG, &WEIGHT, &AUX_FRANJAS, &SEGMENTO, &MODELO_MOD1, &BETAS_MOD1, &TABLE_PRED_MOD1)`<sup id="a1-1-16">[[16]](#f1-1-16)</sup>
 
-## 1.2. Transformer
+## 1.2. Transformer [↩](#1-modelo-de-capacidad-de-pago)
 
 * Define la macro `TRANSFORMER` que da nombre al programa:
 `TRANSFORMER(BASE_A_PARTIR, FLAG, WEIGHT, SEGMENT, TRAIN_TEST_SPLIT)`
@@ -187,7 +197,7 @@ Incluye a su vez los siguientes componentes (macros):
 * Llama la macro `TRANSFORMER` que ha definido en el paso anterior:
 `TRANSFORMER(&TABLA_MODELO, CAPACIDAD, WEIGHTS, &SEGMENTO, 0.8)`
 
-## 1.3. Modeler
+## 1.3. Modeler [↩](#1-modelo-de-capacidad-de-pago)
 
 * Define la macro `MODELER` que da nombre al programa:
 `MODELER(BASE_A_PARTIR, FLAG, WEIGHT)`
@@ -217,7 +227,7 @@ Incluye a su vez los siguientes componentes (macros):
 * Ejecuta la macro `MODELER` definida en el paso anterior:
 `MODELER(&TABLA_MODELO, CAPACIDAD, WEIGHT_AUX)`
 
-# 2. Modelo de contactabilidad
+# 2. Modelo de contactabilidad [↩](#readme-sas-cdm)
 
 ## 2.1. Variables:
 
@@ -333,18 +343,18 @@ Incluye a su vez los siguientes componentes (macros):
 ## 2.3. Modeler:
 
 * Define las macros correspondientes a varios modelos de clasificación:
-    - [**Treebost classification:**](#treeboost-classification-model) `TREEBOOST_CLASSIFICATION_MODEL`
-    - **Tree classification:** `TREE_CLASSIFICATION_MODEL`
-    - **PCA classification:** `PCA_CLASSIFICATION_MODEL`
-    - **Cluster classification:** `CLUSTER_CLASSIFICATION_MODEL`
+    - [**Treebost classification**](#treeboost-classification-model)
+    - [**Tree classification**](#tree-classification-model)
+    - [**PCA classification**](#pca-classification-model)
+    - [**Cluster classification**](#cluster-classification-model)
 
-### Treeboost classification model
+### Treeboost classification model [↩](#23-modeler)
 
-### Tree classification model
+### Tree classification model [↩](#23-modeler)
 
-### PCA classification model
+### PCA classification model [↩](#23-modeler)
 
-### Cluster classification model
+### Cluster classification model [↩](#23-modeler)
 
 ---
 **Notas / comentarios sección 1.1. Vars y macros**
