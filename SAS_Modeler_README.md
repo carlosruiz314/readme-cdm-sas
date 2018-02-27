@@ -395,7 +395,7 @@ _Ir a la sección_ [_Notas y comentarios_](#notas--comentarios-sección-23-model
 
 * Define las macros correspondientes a varios modelos de clasificación:
     - [**Logistic**](#logistic-model-)
-    - [**Treebost classification**](#treeboost-classification-model-)
+    - [**Treeboost classification**](#treeboost-classification-model-)
     - [**Tree classification**](#tree-classification-model-)
     - [**PCA classification**](#pca-classification-model-)
     - [**Cluster classification**](#cluster-classification-model-)
@@ -428,7 +428,7 @@ Modelo mediante **gradient boosting machine**. Se separa también en train y tes
 
         - **Franja:** `&DEPTH`
         - **Iteraciones:** `&ITERATIONS`
-        - **IP train:** `&IP_TREEBOST_TRAIN`
+        - **IP train:** `&IP_TREEBOOST_TRAIN`
         - **IP test:** `&IP_TREEBOOST_TEST`
 
         A continuación se adunta el código fuente:
@@ -438,7 +438,7 @@ Modelo mediante **gradient boosting machine**. Se separa también en train y tes
     	 		SET
     			 Franja = &DEPTH.,
     			 ITER = &ITERATIONS.,
-    			 IP_TRAIN = &IP_TREEBOST_TRAIN.,
+    			 IP_TRAIN = &IP_TREEBOOST_TRAIN.,
     			 IP_TEST = &IP_TREEBOOST_TEST.;
     		QUIT;
             ```
@@ -518,6 +518,7 @@ QUIT;
 
 ### PCA classification model [↩](#23-modeler-)
 
+
 ### Cluster classification model [↩](#23-modeler)
 
 ---
@@ -527,7 +528,7 @@ QUIT;
 
 <a id="f1-1-2"><sup>[2]</a></sup> ¿En qué unidades está denominada la capacidad?
 Se le suma 1 por si la capacidad es 0, para que el logaritmo no dé error.
-Entiendo que el `LOG()` es para limitar el peso de los valores muy elevados en el modelo. [↩](#a1-1-2)
+El `LOG()` es para limitar el peso de los valores muy elevados en el modelo (_skewness_). [↩](#a1-1-2)
 
 <a id="f1-1-3"><sup>[3]</a></sup> `ID_FCH_DATOS` [↩](#a1-1-3)
 
@@ -535,25 +536,25 @@ Entiendo que el `LOG()` es para limitar el peso de los valores muy elevados en e
 
 <a id="f1-1-5"><sup>[5]</a></sup> i.e. Regularized Linear Regression [↩](#a1-1-5)
 
-<a id="f1-1-6"><sup>[6]</a></sup> Dice que se busca la profundidad óptima del árbol. Entiendo que es un hiperparámetro; ¿se está calibrando directamente sobre test set o se están haciendo cross-validation set y test set por separado? [↩](#a1-1-6)
+<a id="f1-1-6"><sup>[6]</a></sup> Se busca la profundidad óptima del árbol (hiperparámetro). Se está calibrando directamente sobre test set, pero a efectos de overfitting tampoco es muy significativo separarlo en 2 o 3 muestras. [↩](#a1-1-6)
 
-<a id="f1-1-7"><sup>[7]</a></sup> ¿Por qué la función que calcula la profundidad es la exponencial con base 2? [↩](#a1-1-7)
+<a id="f1-1-7"><sup>[7]</a></sup> Se calcula con la exponencial para iterar más rápido. La elección de base 2 es arbitraria. [↩](#a1-1-7)
 
 <a id="f1-1-8"><sup>[8]</a></sup> Root-Mean-Square Error (Deviation) [↩](#a1-1-8)
 
-<a id="f1-1-9"><sup>[9]</a></sup> ¿Se está haciendo cross-validation? [↩](#a1-1-9)
+<a id="f1-1-9"><sup>[9]</a></sup> Test es la tabla test definitiva; no hay cross-validation set. [Más información](#f1-1-6) [↩](#a1-1-9)
 
 <a id="f1-1-10"><sup>[10]</a></sup> Usando el dataset entero, las iteraciones óptimas según el hiperparámetro seleccionado tras minimizar RMSE en el Validation set [↩](#a1-1-10)
 
-<a id="f1-1-11"><sup>[11]</a></sup> ¿Por qué `5*i`? ¿Por qué en treeboost es exponencial base 2 y ahora en el tree regression model se multiplica por 5? [↩](#a1-1-11)
+<a id="f1-1-11"><sup>[11]</a></sup> Se toma `5*i` para iterar en incrementos de 5 niveles de profundidad. La profundidad máxima en el CART de SAS es de 50 niveles. En el treeboost se usa una función exponencial para iterar más rápido; en este se usa una función lineal, lo que provocará que respecto al `TREEBOOST` se itere más lento. [↩](#a1-1-11)
 
 <a id="f1-1-12"><sup>[12]</a></sup> Usando el dataset entero, la profundidad óptima según el hiperparámetro seleccionado tras minimizar RMSE en el Validation set [↩](#a1-1-12)
 
-<a id="f1-1-13"><sup>[13]</a></sup> ¿Por qué esta fórmula? ¿Por qué se divide entre 20? [↩](#a1-1-13)
+<a id="f1-1-13"><sup>[13]</a></sup> Se divide entre 20 para hacer selecciones incrementales en grupos de 20 variables en el PCA. Es decir, en la primera iteración se tomarán las primeras 20 variables con mayor varianza. En la segunda, dichas 20 variables más las 20 siguientes, todas ellas ordenadas por varianza en orden descendiente. [↩](#a1-1-13)
 
 <a id="f1-1-14"><sup>[14]</a></sup> Se modifica la tabla de entrada para capturar el dataset entero y se lanza la regresión con el número óptimo de componentes principales [↩](#a1-1-14)
 
-<a id="f1-1-15"><sup>[15]</a></sup> Entiendo que se deja el nombre R<sup>2</sup> por conveniencia, ya que `IND_MIN` hace referencia al IP univariante mínimo necesario para que una variable pueda entrar en un cluster del modelo. [↩](#a1-1-15)
+<a id="f1-1-15"><sup>[15]</a></sup> **REVISAR MODELER V7** Entiendo que se deja el nombre R<sup>2</sup> por conveniencia, ya que `IND_MIN` hace referencia al IP univariante mínimo necesario para que una variable pueda entrar en un cluster del modelo. [↩](#a1-1-15)
 
 <a id="f1-1-16"><sup>[16]</a></sup> Se modifica la tabla de entrada para capturar el dataset entero y se lanza la regresión con el número óptimo de componentes principales [↩](#a1-1-16)
 
@@ -579,6 +580,6 @@ Entiendo que el `LOG()` es para limitar el peso de los valores muy elevados en e
 
 <a id="f2-3-1"><sup>[1]</a></sup> Parece que todos estos comentarios están copiados y pegados, y realmente no describen lo que se está buscando conseguir con el código al que se refieren. [↩](#a2-3-1)
 
-<a id="f2-3-2"><sup>[2]</a></sup> ¿Por qué no se introduce `&MAX_ITER` como parámetro, tal y como se hacía en el treeboost? [↩](#a2-3-2)
+<a id="f2-3-2"><sup>[2]</a></sup> No se introduce `&MAX_ITER` como parámetro porque las iteraciones del CART son más rápidas que las del CART con gradient boosting. [↩](#a2-3-2)
 
-<a id="f2-3-3"><sup>[3]</a></sup> ¿Por qué en el árbol de regresión era `5*&I` y ahora en el de clasificación es `10*&I`? [↩](#a2-3-3)
+<a id="f2-3-3"><sup>[3]</a></sup> Nueva elección arbitraria de número de iteraciones, siempre teniendo en cuenta que el máximo de iteraciones del árbol en SAS es de 50. Por este motivo en el árbol de regresión la profundidad era `5*&I` y ahora en el de clasificación es `10*&I`. [↩](#a2-3-3)
